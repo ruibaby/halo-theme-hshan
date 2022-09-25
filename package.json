@@ -11,6 +11,7 @@
     "build-utils": "uglifyjs templates/assets/media/scripts/utils.js -o templates/assets/media/scripts/utils.min.js",
     "build-js": "npm run build-main && npm run build-post && npm run build-plugin && npm run build-night-mode && npm run build-utils",
     "deploy": "npm run build",
+    "prettier": "prettier --write './templates/**/*.html'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,16 +25,20 @@
   },
   "homepage": "https://github.com/hshanx/halo-theme-hshan#readme",
   "devDependencies": {
+    "@iconify/iconify": "^3.0.0",
+    "@iconify/json": "^2.1.112",
     "@types/node": "^17.0.45",
     "@types/nprogress": "^0.2.0",
     "autoprefixer": "^10.4.12",
     "less": "^3.13.1",
     "postcss": "^8.4.16",
+    "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "rollup-plugin-watch": "^1.0.1",
     "typescript": "^4.8.3",
     "uglify-js": "^3.17.1",
-    "vite": "^2.9.15"
+    "vite": "^2.9.15",
+    "vite-plugin-purge-icons": "^0.9.1"
   },
   "dependencies": {
     "nprogress": "^0.2.0"

@@ -1,48 +1,50 @@
-<@layout.extends name="module/macro.ftl">
-    <@layout.put block="title">${blog_title!}</@layout.put>
-    <@layout.put block="content">
-        <div id="page" class="site">
-            <main class="site-main" id="main">
-                <div class="site-content home-content">
-                    <!-- 封面 -->
-                    <header class="bg-cover hero">
-                        <#if settings.home_cover?? && settings.home_cover!=''>
-                            <div class="cover-bg">
-                                <img src="${settings.home_cover!}" alt="">
-                            </div>
-                        <#else>
-                            <div class="default-cover-bg">
-                            </div>
-                        </#if>
-                        <div class="cover-content">
-                            <!-- 封面内容 -->
-                            <div class="inner">
-                                <h2 class="hero-title">${settings.home_title!options.blog_title!}</h2>
-                                <p class="hero-text" id="slogan">${settings.home_description!}</p>
-                                <#if settings.enabled_index_cover_height!true>
-                                    <a href="#postContainer"  class="arrow-down" data-scroll><span
-                                                class="screen-reader-text">Scroll Down</span></a>
-                                </#if>
-                            </div>
+<!DOCTYPE html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="module/macro :: html(~{::content})"
+>
+  <th:block th:fragment="content">
+    <div id="page" class="site">
+        <main class="site-main" id="main">
+            <div class="site-content home-content">
+                <!-- 封面 -->
+                <header class="bg-cover hero">
+                        <div th:if="not ${#strings.isEmpty(theme.config.general.home_cover)}" class="cover-bg">
+                            <img src="${settings.home_cover!}" alt="">
                         </div>
-                    </header>
-                    <div id="postContainer">
-                        <!-- post-list -->
-                        <#if (settings.post_list_style!'standard') == 'standard'>
-                            <#include "module/post-list-style/standard.ftl">
-                        <#elseif settings.post_list_style == 'simple'>
-                            <#include "module/post-list-style/simple.ftl">
-                        <#else>
-                            <#include "module/post-list-style/random-card.ftl">
-                        </#if>
+                        <div th:unless="${#strings.isEmpty(theme.config.general.home_cover)}" class="default-cover-bg">
+                        </div>
+                    <div class="cover-content">
+                        <!-- 封面内容 -->
+                        <div class="inner">
+                            <h2 class="hero-title" th:text="${site.title}"></h2>
+                            <p class="hero-text" id="slogan" th:text="${site.subtitle}"></p>
+                                <a th:if="${theme.config.general.enabled_index_cover_height}" href="#postContainer"  class="arrow-down" data-scroll><span
+                                            class="screen-reader-text">Scroll Down</span></a>
+                        </div>
                     </div>
-                    <#if posts.totalPages gt 1>
-                        <@paginationTag method="index" page="${posts.number}" total="${posts.totalPages}" display="3">
-                            <#include "module/pagination.ftl">
-                        </@paginationTag>
-                    </#if>
+                </header>
+                <div id="postContainer"  th:with="postItems=${posts.items}">
+                    <th:block th:switch="${theme.config.general.post_list_style}">
+                        <th:block th:case="standard">
+                            <th:block th:replace="module/post-list-style/standard :: standard" />
+                        </th:block>
+                        <th:block th:case="simple">
+                            <th:block th:replace="module/post-list-style/simple :: simple" />
+                        </th:block>
+                        <th:block th:case="card">
+                            <th:block th:replace="module/post-list-style/random-card :: random_card" />
+                        </th:block>
+                    </th:block>
                 </div>
-            </main>
-        </div>
-    </@layout.put>
-</@layout.extends>
+                <#if posts.totalPages gt 1>
+                    <@paginationTag method="index" page="${posts.number}" total="${posts.totalPages}" display="3">
+                        <#include "module/pagination.ftl">
+                    </@paginationTag>
+                </#if>
+            </div>
+        </main>
+    </div>
+  </th:block>
+
+  </html>
