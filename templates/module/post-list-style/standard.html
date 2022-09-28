@@ -10,14 +10,12 @@
           th:each="tag : ${post.tags}"
           th:href="@{tag.status.permalink}"
           th:text="${tag.spec.displayName + '&nbsp;&nbsp;'}"
-          data-ajax
         ></a>
       </div>
       <div class="post-header-wrap">
         <h2 class="post-title">
           <a
-            th:href="@{post.status.permalink}"
-            data-ajax
+            th:href="${post.status.permalink}"
             th:text="${post.spec.title}"
           ></a>
         </h2>
@@ -45,7 +43,7 @@
     <!-- post-content -->
     <div class="post-content">
       <div class="read-more">
-        <a class="button" th:href="@{post.status.permalink}" data-ajax>
+        <a class="button" th:href="${post.status.permalink}">
           Read More
           <span aria-hidden="true"></span>
           <span class="line left"></span>

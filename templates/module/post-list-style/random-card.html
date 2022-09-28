@@ -14,7 +14,6 @@
             <div class="featured-image">
               <a
                 th:if="not ${#strings.isEmpty(post.spec.cover)}"
-                data-ajax
                 th:href="${post.status.permalink}"
                 style="
                   background-repeat: no-repeat !important;
@@ -32,7 +31,7 @@
                 ></span>
               </a>
               <!-- <#elseif settings.card_random_cover!false>
-                                        <a  data-ajax href="${post.fullPath!}" class="thumb hover-effect">
+                                        <a   href="${post.fullPath!}" class="thumb hover-effect">
                                             <#assign x = "${settings.card_random_cover_img_num?number}" />
                                             <#assign thumbnailIndex ="${post_index % (x?number)}"/>
                                                  <span class="fullimage cover" role="img" aria-label=""
@@ -42,7 +41,6 @@
                                         -->
               <a
                 th:unless="${not #strings.isEmpty(post.spec.cover)} or ${not #strings.isEmpty(theme.config.general.card_random_cover)}"
-                data-ajax
                 th:href="${post.status.permalink}"
                 class="thumb hover-effect"
               >
@@ -54,7 +52,6 @@
               </a>
               <div th:if="${#lists.size(post.tags)} gt 0" class="tags absolute">
                 <a
-                  data-ajax
                   th:href="${post.tags[0].status.permalink}"
                   th:text="${post.tags[0].spec.displayName}"
                   class="ctag ctag-6 ctag-gridea"
@@ -78,7 +75,6 @@
           <h1 class="title main-title gradient-effect">
             <a
               th:href="${post.status.permalink}"
-              data-ajax
               th:text="${post.spec.title}"
             ></a>
           </h1>
@@ -91,7 +87,7 @@
         ></div>
 
         <footer class="author-meta">
-          <a href="" class="author" title="" data-ajax>
+          <a href="" class="author" title="">
             <span
               class="author-image cover"
               style="background-image: url(${user.avatar!})"

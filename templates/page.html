@@ -1,6 +1,12 @@
-<@layout.extends name="module/macro.ftl">
-    <@layout.put block="title">${sheet.title!} - ${blog_title!}</@layout.put>
-    <@layout.put block="content">
+<!DOCTYPE html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="module/layout :: html(~{::content},~{::head})"
+>
+<th:block th:fragment="head">
+    </th:block>
+
+    <th:block th:fragment="content">
         <div id="page" class="site">
             <main class="site-main" id="main">
                 <div class="site-content post-page">
@@ -16,12 +22,11 @@
                         <div class="cover-content">
                             <div class="inner">
                                 <div class="post-count"></div>
-                                <h1 class="page-title" style="font-size: 46px;">${sheet.title!}</h1>
+                                <h1 class="page-title" style="font-size: 46px;" th:text="${singlePage.spec.title}"></h1>
                             </div>
                         </div>
                     </header>
-                    <div class="sheet-content">
-                        ${sheet.formatContent!}
+                    <div class="sheet-content" th:utext="${singlePage.content.content}">
                     </div>
                 </div>
                 <#include "module/comment.ftl">
@@ -32,5 +37,5 @@
                 </#if>
             </main>
         </div>
-    </@layout.put>
-</@layout.extends>
+        </th:block>
+</html>

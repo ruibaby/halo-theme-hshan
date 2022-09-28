@@ -5,11 +5,7 @@
   >
     <div class="padding-left">
       <h2 class="post-item-title">
-        <a
-          th:href="${post.status.permalink}"
-          data-ajax
-          th:text="${post.spec.title}"
-        >
+        <a th:href="${post.status.permalink}" th:text="${post.spec.title}">
           <span th:if="${post.spec.pinned}">🔥</span>
         </a>
       </h2>
@@ -30,7 +26,6 @@
             th:each="tag : ${post.tags}"
             th:href="@{tag.status.permalink}"
             th:text="${tag.spec.displayName + '&nbsp;&nbsp;'}"
-            data-ajax
           ></a>
         </span>
       </p>
@@ -39,7 +34,6 @@
     <a
       th:if="not ${#strings.isEmpty(post.spec.cover)}"
       href="${post.fullPath!}"
-      data-ajax
       class="post-feature-image"
       th:style="background-image: url(${post.spec.cover})"
     >

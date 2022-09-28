@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html
   xmlns:th="https://www.thymeleaf.org"
-  th:replace="module/macro :: html(~{::content},~{::head})"
+  th:replace="module/layout :: html(~{::content},~{::head})"
 >
 <th:block th:fragment="head">
 
@@ -9,7 +9,7 @@
     <#include "./module/tocbot/libs-import.ftl" />
     <#include "./module/social-share/libs-import.ftl" />
     <#include "./module/viewer/libs-import.ftl" /> -->
-        <link th:if="${theme.config.post.enabled_katex}" rel="stylesheet" href="${theme_base!}/assets/libs/katex/katex.min.css">
+        <link th:if="${theme.config.post.enabled_katex}" rel="stylesheet" th:href="@{/assets/libs/katex/katex.min.css}">
 </th:block>
 <th:block th:fragment="content">
         <div id="page" class="site post-template">
@@ -21,7 +21,7 @@
                     <article class="post tag-getting-started" id="siteContent">
                         <header class="bg-cover post-header" id="postHeader">
                                 <div th:if="not ${#strings.isEmpty(post.spec.cover)}" class="cover-bg">
-                                    <img src="${post.thumbnail!}" alt="${post.title!}"/>
+                                    <img th:src="${post.spec.cover}" alt="${post.title!}"/>
                                 </div>
                                 <div th:unless="${#strings.isEmpty(post.spec.cover)}" class="default-cover-bg">
                                 </div>
@@ -101,7 +101,7 @@
                             <h2 class="screen-reader-text">Post navigation</h2>
                             <div class="nav-links">
                                 <#if prevPost??>
-                                    <a href="${prevPost.fullPath!}" data-ajax class="nav-previous">
+                                    <a href="${prevPost.fullPath!}"  class="nav-previous">
                                         <#if prevPost.thumbnail?? && prevPost.thumbnail!=''>
                                             <div class="nav-bg ">
                                                 <img src="${prevPost.thumbnail!}" alt=""/>
@@ -123,7 +123,7 @@
                                     </a>
                                 </#if>
                                 <#if nextPost??>
-                                    <a href="${nextPost.fullPath!}" data-ajax class="nav-next">
+                                    <a href="${nextPost.fullPath!}"  class="nav-next">
                                         <#if nextPost.thumbnail?? && nextPost.thumbnail!=''>
                                             <div class="nav-bg ">
                                                 <img src="${nextPost.thumbnail!}" alt=""/>
