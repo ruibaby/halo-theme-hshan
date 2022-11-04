@@ -134,12 +134,11 @@
                                         </p> -->
                 </div>
 
-                <!-- <#include "module/comment.ftl">
-                                <#if is_post??>
-                                    <@comment post,"post" />
-                                <#elseif is_sheet??>
-                                    <@comment sheet,"sheet" />
-                                </#if> -->
+                <halo:comment
+                  group="content.halo.run"
+                  kind="Post"
+                  th:attr="name=${post.metadata.name}"
+                />
               </div>
             </div>
           </article>
