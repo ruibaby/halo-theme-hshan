@@ -21,7 +21,7 @@
         </h2>
         <div class="post-meta">
           <span class="post-author"
-            ><i class="fa fa-eye"></i> ${post.visits!} 次访问</span
+            ><i class="fa fa-eye"></i><th:block th:text="${post.stats.visit}"/> 次访问</span
           >
           <span th:if="${post.spec.pinned}" class="tag tag-primary"
             >已置顶</span

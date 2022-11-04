@@ -3,179 +3,266 @@
   xmlns:th="https://www.thymeleaf.org"
   th:replace="module/layout :: html(~{::content},~{::head})"
 >
-<th:block th:fragment="head">
-
-    <!-- <#include "./module/highlightjs/libs-import.ftl" />
+  <th:block th:fragment="head">
+    <!-- 
     <#include "./module/tocbot/libs-import.ftl" />
     <#include "./module/social-share/libs-import.ftl" />
     <#include "./module/viewer/libs-import.ftl" /> -->
-        <link th:if="${theme.config.post.enabled_katex}" rel="stylesheet" th:href="@{/assets/libs/katex/katex.min.css}">
-</th:block>
-<th:block th:fragment="content">
-        <div id="page" class="site post-template">
-            <main class="site-main" id="main">
-                <div id="readProgress">
-                    <div class="read-progress-bar" role="progressbar" style="width: 0"></div>
+    <link
+      th:if="${theme.config.post.enabled_katex}"
+      rel="stylesheet"
+      th:href="@{/assets/libs/katex/katex.min.css}"
+    />
+  </th:block>
+  <th:block th:fragment="content">
+    <div id="page" class="site post-template">
+      <main class="site-main" id="main">
+        <div id="readProgress">
+          <div
+            class="read-progress-bar"
+            role="progressbar"
+            style="width: 0"
+          ></div>
+        </div>
+        <div class="site-content post-page">
+          <article class="post tag-getting-started" id="siteContent">
+            <header class="bg-cover post-header" id="postHeader">
+              <div
+                th:if="not ${#strings.isEmpty(post.spec.cover)}"
+                class="cover-bg"
+              >
+                <img th:src="${post.spec.cover}" alt="${post.title!}" />
+              </div>
+              <div
+                th:unless="${#strings.isEmpty(post.spec.cover)}"
+                class="default-cover-bg"
+              ></div>
+              <div class="cover-content">
+                <div class="inner">
+                  <div class="post-tags">
+                    <a
+                      th:each="tag : ${post.tags}"
+                      th:href="${tag.status.permalink}"
+                      th:text="${tag.spec.displayName + '&nbsp;&nbsp;'}"
+                    ></a>
+                  </div>
+                  <h1
+                    class="post-title js-toc-ignore"
+                    th:text="${post.spec.title}"
+                  ></h1>
+                  <div class="post-meta">
+                    <span class="post-meta-wrap">
+                      <img
+                        class="author-avatar"
+                        srcset="${user.avatar!}, ${user.avatar!} 2x"
+                        src="${user.avatar!}"
+                        alt=""
+                      />
+                      <span class="post-author"
+                        ><th:block th:text="${post.stats.visit}" /> 次访问</span
+                      >
+                      <time
+                        class="published"
+                        th:attr="datetime=${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"
+                        th:text="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"
+                      >
+                      </time>
+                    </span>
+                    <div th:text="${post.contributors[0].displayName}"></div>
+                  </div>
+                  <a
+                    th:if="${theme.config.post.enabled_visual_height}"
+                    href="#post-content"
+                    class="arrow-down"
+                    data-scroll
+                    ><span class="screen-reader-text">Scroll Down</span></a
+                  >
                 </div>
-                <div class="site-content post-page">
-                    <article class="post tag-getting-started" id="siteContent">
-                        <header class="bg-cover post-header" id="postHeader">
-                                <div th:if="not ${#strings.isEmpty(post.spec.cover)}" class="cover-bg">
-                                    <img th:src="${post.spec.cover}" alt="${post.title!}"/>
-                                </div>
-                                <div th:unless="${#strings.isEmpty(post.spec.cover)}" class="default-cover-bg">
-                                </div>
-                            <div class="cover-content">
-                                <div class="inner">
-                                    <div class="post-tags">
-                                        <a  th:each="tag : ${post.tags}"
-                                        th:href="${tag.status.permalink}"
-                                                th:text="${tag.spec.displayName + '&nbsp;&nbsp;'}"></a>
-                                    </div>
-                                    <h1 class="post-title js-toc-ignore" th:text="${post.spec.title}"></h1>
-                                    <div class="post-meta">
-                                    <span class="post-meta-wrap">
-                                        <img class="author-avatar"
-                                             srcset="${user.avatar!}, ${user.avatar!} 2x"
-                                             src="${user.avatar!}" alt=""/>
-                                        <span class="post-author">${post.visits} 次访问</span>
-                                        <time class="published"
-                                        th:attr="datetime=${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"
-                                        th:text="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}">
-                                        </time>
-                                    </span>
-                                        <div th:text="${post.contributors[0].displayName}"></div>
-                                    </div>
-                                        <a th:if="${theme.config.post.enabled_visual_height}" href="#post-content" class="arrow-down" data-scroll><span
-                                                    class="screen-reader-text">Scroll Down</span></a>
-                                </div>
-                            </div>
-                        </header>
-                        <div class="post-inner">
-                            <div class="article-body">
-                                <div class="post-content article-content" id="post-content" th:utext="${post.content.content}">
-                                </div>
-                                <div id="tocFlag"></div>
-                                    <aside th:if="${theme.config.post.post_toc}" id="toc" class="toc"></aside>
-                            </div>
-                            <div class="article-info" id="articleInfo">
-                                <div class="extra-info extra-info-center">
-                                        <button th:if="${not #strings.isEmpty(theme.config.post.QR_code_zfb)} or ${not #strings.isEmpty(theme.config.post.QR_code_wx)}" type="submit"
-                                                class="appreciate-btn btn-primary font-bold rounded width-47 height-46 custom-color-solid-bg font-16-to-14"
-                                                onclick="">
-                                            <img th:src="@{/assets/media/images/cuplogo-sm.png}"
-                                                 class="right-mrgn-8 support-img" style="height: 16px"/>
-                                            <span id="">支持作者</span>
-                                        </button>
-                                        <button th:if="${theme.config.post.social_share}" class="btn-primary btn-primary-light font-bold rounded width-47 height-46 custom-color-secondary-bg share-btn "
-                                                onclick="">
-                                            <span id="">分享</span>
-                                        </button>
-                                </div>
-                                <div id="socialShare" class="no-show">
-                                    <div class="social-share" data-disabled="${settings.share_disabeld!''}"></div>
-                                </div>
-                                <div
-                                        th:class="${theme.config.post.copyright_clean?'article-copyright-info simple-copyright-info':'article-copyright-info full-copyright-info'}"
-                                >
-                                        <p th:if="${theme.config.post.copyright_clean}">© 本文著作权归作者所有，转载前请务必署名</p>
+              </div>
+            </header>
+            <div class="post-inner">
+              <div class="article-body">
+                <div
+                  class="post-content article-content"
+                  id="post-content"
+                  th:utext="${post.content.content}"
+                ></div>
+                <div id="tocFlag"></div>
+                <aside
+                  th:if="${theme.config.post.post_toc}"
+                  id="toc"
+                  class="toc"
+                ></aside>
+              </div>
+              <div class="article-info" id="articleInfo">
+                <div class="extra-info extra-info-center">
+                  <button
+                    th:if="${not #strings.isEmpty(theme.config.post.QR_code_zfb)} or ${not #strings.isEmpty(theme.config.post.QR_code_wx)}"
+                    type="submit"
+                    class="appreciate-btn btn-primary font-bold rounded width-47 height-46 custom-color-solid-bg font-16-to-14"
+                    onclick=""
+                  >
+                    <img
+                      th:src="@{/assets/media/images/cuplogo-sm.png}"
+                      class="right-mrgn-8 support-img"
+                      style="height: 16px"
+                    />
+                    <span id="">支持作者</span>
+                  </button>
+                  <button
+                    th:if="${theme.config.post.social_share}"
+                    class="btn-primary btn-primary-light font-bold rounded width-47 height-46 custom-color-secondary-bg share-btn"
+                    onclick=""
+                  >
+                    <span id="">分享</span>
+                  </button>
+                </div>
+                <div id="socialShare" class="no-show">
+                  <div
+                    class="social-share"
+                    data-disabled="${settings.share_disabeld!''}"
+                  ></div>
+                </div>
+                <div
+                  th:class="${theme.config.post.copyright_clean?'article-copyright-info simple-copyright-info':'article-copyright-info full-copyright-info'}"
+                >
+                  <!-- <p th:if="${theme.config.post.copyright_clean}">© 本文著作权归作者所有，转载前请务必署名</p>
                                         <p th:unless="${theme.config.post.copyright_clean}">本文由 <a href="${blog_url!}">${user.nickname!}</a> 创作，如果您觉得本文不错，请随意赞赏<br>采用 <a
                                                     href="https://creativecommons.org/licenses/by/4.0/" target="_blank"
                                                     rel="external nofollow">知识共享署名4.0</a> 国际许可协议进行许可<br>本站文章除注明转载/出处外，均为本站原创或翻译，转载前请务必署名<br>原文链接：<a
                                                     href="${post.fullPath!}">${post.fullPath!}</a><br>最后更新于：${post.editTime?string('yyyy-MM-dd HH:mm:ss')}
-                                        </p>
-                                </div>
+                                        </p> -->
+                </div>
 
-                                <!-- <#include "module/comment.ftl">
+                <!-- <#include "module/comment.ftl">
                                 <#if is_post??>
                                     <@comment post,"post" />
                                 <#elseif is_sheet??>
                                     <@comment sheet,"sheet" />
                                 </#if> -->
-                            </div>
-                        </div>
-                    </article>
-
-                    <#if settings.post_nepre!true>
-                        <nav class="post-navigation" id="post-navigation">
-                            <h2 class="screen-reader-text">Post navigation</h2>
-                            <div class="nav-links">
-                                <#if prevPost??>
-                                    <a href="${prevPost.fullPath!}"  class="nav-previous">
-                                        <#if prevPost.thumbnail?? && prevPost.thumbnail!=''>
-                                            <div class="nav-bg ">
-                                                <img src="${prevPost.thumbnail!}" alt=""/>
-                                            </div>
-                                        <#else>
-                                            <div class="nav-bg default-cover-bg">
-                                            </div>
-                                        </#if>
-                                        <div class="nav-inside">
-                                            <span class="nav-before">上一篇</span>
-                                            <span class="nav-title">${prevPost.title!}</span>
-                                            <span class="nav-date">
-                                                <time class="published"
-                                                      datetime="${prevPost.createTime?string("yyyy-MM-dd")}">
-                                                    ${prevPost.createTime?string("yyyy-MM-dd")}
-                                                </time>
-                                            </span>
-                                        </div>
-                                    </a>
-                                </#if>
-                                <#if nextPost??>
-                                    <a href="${nextPost.fullPath!}"  class="nav-next">
-                                        <#if nextPost.thumbnail?? && nextPost.thumbnail!=''>
-                                            <div class="nav-bg ">
-                                                <img src="${nextPost.thumbnail!}" alt=""/>
-                                            </div>
-                                        <#else>
-                                            <div class="nav-bg default-cover-bg">
-                                            </div>
-                                        </#if>
-                                        <div class="nav-inside">
-                                            <span class="nav-before">下一篇</span>
-                                            <span class="nav-title">${nextPost.title!}</span>
-                                            <span class="nav-date">
-                                                <time class="published"
-                                                      datetime="${nextPost.createTime?string("yyyy-MM-dd")}">${nextPost.createTime?string("yyyy-MM-dd")}
-                                        </time>
-                                            </span>
-                                        </div>
-                                    </a>
-                                </#if>
-
-                            </div>
-                        </nav>
-                    </#if>
-                </div>
-
-            </main>
-        </div>
-        <div class="qr-code-wrap" role="dialog">
-            <div role="document" class="qr-code" style="transform-origin: 201px 294px;">
-        <span class="closinglayer">
-            <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="close" width="1em"
-                 height="1em" fill="currentColor" aria-hidden="true">
-                <path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"></path></svg>
-        </span>
-                <div style="text-align: center;padding: 10px 0;">
-                    <#if settings.QR_code_zfb??>
-                        <img class="qr_code_zfb" src="${settings.QR_code_zfb!}"/>
-                    </#if>
-                    <#if settings.QR_code_wx??>
-                        <img class="qr_code_wx" src="${settings.QR_code_wx!}"/>
-                    </#if>
-                </div>
-                <#if settings.QR_code_zfb?? && settings.QR_code_wx??>
-                    <div class="switch-btn">
-                        <span class="zfb-btn">支付宝</span>
-                        <span class="wx-btn">微信</span>
-                    </div>
-                </#if>
+              </div>
             </div>
+          </article>
+
+          <!-- <nav
+            th:if="${theme.config.post.post_nepre}"
+            th:with="postCursor = ${postFinder.cursor(post.metadata.name)}"
+            class="post-navigation"
+            id="post-navigation"
+          >
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+              <a
+                th:if="${postCursor.hasPrevious()}"
+                th:href="@{${postCursor.previous.status.permalink}}"
+                class="nav-previous"
+              >
+                <div
+                  th:if="not ${#strings.isEmpty(postCursor.previous.spec.cover)}"
+                  class="nav-bg"
+                >
+                  <img th:src="${postCursor.previous.spec.cover}" alt="" />
+                </div>
+                <div
+                  th:unless="${#strings.isEmpty(postCursor.previous.spec.cover)}"
+                  class="nav-bg default-cover-bg"
+                ></div>
+                <div class="nav-inside">
+                  <span class="nav-before">上一篇</span>
+                  <span
+                    class="nav-title"
+                    th:text="${postCursor.previous.spec.title}"
+                  ></span>
+                  <span class="nav-date">
+                    <time
+                      class="published"
+                      th:datetime="${postCursor.previous.spec.publishTime}"
+                      th:text="${#dates.format(postCursor.previous.spec.publishTime,'yyyy-MM-dd')}"
+                    >
+                    </time>
+                  </span>
+                </div>
+              </a>
+              <a
+                th:if="${postCursor.hasNext()}"
+                th:href="@{${postCursor.next.status.permalink}}"
+                class="nav-next"
+              >
+                <div
+                  th:if="not ${#strings.isEmpty(postCursor.next.spec.cover)}"
+                  class="nav-bg"
+                >
+                  <img th:src="${postCursor.next.spec.cover}" alt="" />
+                </div>
+                <div
+                  th:unless="${#strings.isEmpty(postCursor.next.spec.cover)}"
+                  class="nav-bg default-cover-bg"
+                ></div>
+                <div class="nav-inside">
+                  <span class="nav-before">下一篇</span>
+                  <span
+                    class="nav-title"
+                    th:text="${postCursor.next.spec.title}"
+                  ></span>
+                  <span class="nav-date">
+                    <time
+                      class="published"
+                      th:datetime="${postCursor.next.spec.publishTime}"
+                      th:text="${#dates.format(postCursor.next.spec.publishTime,'yyyy-MM-dd')}"
+                    >
+                    </time>
+                  </span>
+                </div>
+              </a>
+            </div>
+          </nav> -->
         </div>
-    <@layout.put block="footer">
-        <#include "./module/highlightjs/scripts.ftl" />
+      </main>
+    </div>
+    <div class="qr-code-wrap" role="dialog">
+      <div
+        role="document"
+        class="qr-code"
+        style="transform-origin: 201px 294px"
+      >
+        <span class="closinglayer">
+          <svg
+            viewBox="64 64 896 896"
+            focusable="false"
+            class=""
+            data-icon="close"
+            width="1em"
+            height="1em"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"
+            ></path>
+          </svg>
+        </span>
+        <div style="text-align: center; padding: 10px 0">
+          <img
+            th:if="${not #strings.isEmpty(theme.config.general.QR_code_zfb)}"
+            class="qr_code_zfb"
+            src="${settings.QR_code_zfb!}"
+          />
+          <img
+            th:if="${not #strings.isEmpty(theme.config.general.QR_code_wx)}"
+            class="qr_code_wx"
+            src="${settings.QR_code_wx!}"
+          />
+        </div>
+        <div
+          th:if="${not #strings.isEmpty(theme.config.general.QR_code_zfb)} or ${not #strings.isEmpty(theme.config.general.QR_code_wx)}"
+          class="switch-btn"
+        >
+          <span class="zfb-btn">支付宝</span>
+          <span class="wx-btn">微信</span>
+        </div>
+      </div>
+    </div>
+    <!-- <@layout.put block="footer">
         <#include "./module/tocbot/scripts.ftl" />
         <#include "./module/social-share/scripts.ftl" />
         <#include "./module/viewer/scripts.ftl" />
@@ -244,6 +331,6 @@
             })
 
         </script>
-        
-</th:block>
+         -->
+  </th:block>
 </html>
